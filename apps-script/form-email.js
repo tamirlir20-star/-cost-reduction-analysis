@@ -69,7 +69,10 @@ function fmt(n) {
 // Returns the first (and usually only) answer for a given form question key.
 function nv(namedValues, key) {
   const arr = namedValues[key];
-  return (arr && arr[0]) ? arr[0].trim() : '—';
+  if (!arr) return '—';
+  // Take the last non-empty value — handles duplicate columns from re-added questions
+  const val = [...arr].reverse().find(v => v && v.trim());
+  return val ? val.trim() : '—';
 }
 
 function onFormSubmit(e) {
