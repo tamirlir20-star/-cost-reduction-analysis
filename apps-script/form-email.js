@@ -3,11 +3,8 @@
 // Extensions → Apps Script → paste → save
 // Triggers → Add Trigger → onFormSubmit / From spreadsheet / On form submit
 
-// Column order in the sheet (adjust indices if your form order differs):
-// [0] Timestamp  [1] City  [2] Household size
-// [3] Housing    [4] Groceries   [5] Eating out
-// [6] Transport  [7] Utilities   [8] Insurance
-// [9] Entertainment  [10] Email
+// Uses e.namedValues (question text → value) — immune to column reordering.
+// Keys must match the exact question text in the Google Form.
 
 const CBS_AVERAGES = {
   housing:       4800,
@@ -69,25 +66,31 @@ function fmt(n) {
   return '₪' + Math.round(n).toLocaleString('he-IL');
 }
 
-function onFormSubmit(e) {
-  const v = e.values;
-  Logger.log('Values: ' + JSON.stringify(v));
+// Returns the first (and usually only) answer for a given form question key.
+function nv(namedValues, key) {
+  const arr = namedValues[key];
+  return (arr && arr[0]) ? arr[0].trim() : '—';
+}
 
-  const city    = (v[1]  || '').trim();
-  const sizeStr = (v[2]  || '').trim();
-  const email   = v.find(val => val && val.includes('@')) || '';
-  if (!email) return;
+function onFormSubmit(e) {
+  const named = e.namedValues;
+  Logger.log('namedValues: ' + JSON.stringify(named));
+
+  const city    = nv(named, 'עיר');
+  const sizeStr = nv(named, 'גודל משק הבית');
+  const email   = nv(named, 'כתובת אימייל');
+  if (!email || !email.includes('@')) return;
 
   const hFactor = householdFactor(sizeStr);
 
   const categories = [
-    { label: 'דיור',               cbsKey: 'housing',       raw: v[3]  || '—' },
-    { label: 'סופר ומזון',          cbsKey: 'groceries',     raw: v[4]  || '—' },
-    { label: 'אוכל בחוץ ומשלוחים', cbsKey: 'eatingOut',     raw: v[5]  || '—' },
-    { label: 'תחבורה',             cbsKey: 'transport',     raw: v[6]  || '—' },
-    { label: 'חשבונות',            cbsKey: 'utilities',     raw: v[7]  || '—' },
-    { label: 'ביטוחים',            cbsKey: 'insurance',     raw: v[8]  || '—' },
-    { label: 'בילויים ומנויים',     cbsKey: 'entertainment', raw: v[9]  || '—' },
+    { label: 'דיור',               cbsKey: 'housing',       raw: nv(named, 'דיור') },
+    { label: 'סופר ומזון',          cbsKey: 'groceries',     raw: nv(named, 'סופר ומזון') },
+    { label: 'אוכל בחוץ ומשלוחים', cbsKey: 'eatingOut',     raw: nv(named, 'אוכל בחוץ ומשלוחים') },
+    { label: 'תחבורה',             cbsKey: 'transport',     raw: nv(named, 'תחבורה') },
+    { label: 'חשבונות',            cbsKey: 'utilities',     raw: nv(named, 'חשבונות') },
+    { label: 'ביטוחים',            cbsKey: 'insurance',     raw: nv(named, 'ביטוחים') },
+    { label: 'בילויים ומנויים',     cbsKey: 'entertainment', raw: nv(named, 'בילויים ומנויים') },
   ];
 
   let totalUser = 0;
