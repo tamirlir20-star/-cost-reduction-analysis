@@ -93,7 +93,7 @@ function onFormSubmit(e) {
     { label: 'דיור',               cbsKey: 'housing',       raw: nv(named, 'כמה שילמתם על דיור? (שכירות / משכנתא)') },
     { label: 'סופר ומזון',          cbsKey: 'groceries',     raw: nv(named, 'כמה הוצאתם על סופר ומזון?') },
     { label: 'אוכל בחוץ ומשלוחים', cbsKey: 'eatingOut',     raw: nv(named, 'כמה הוצאתם על אוכל בחוץ ומשלוחים?') },
-    { label: 'תחבורה',             cbsKey: 'transport',     raw: nv(named, 'כמה הוצאתם על תחבורה? (דלק / ביטוח רכב / תחבורה ציבורית / חניה)') },
+    { label: 'תחבורה',             cbsKey: 'transport',     raw: nv(named, 'כמה הוצאתם על תחבורה? (דלק  / תחבורה ציבורית / חניה)') },
     { label: 'ביטוחים',            cbsKey: 'insurance',     raw: nv(named, 'כמה שילמתם על ביטוחים? (בריאות + חיים + רכב + דירה)') },
     { label: 'חשבונות',            cbsKey: 'utilities',     raw: nv(named, 'כמה שילמתם על חשבונות? (חשמל + מים + אינטרנט + סלולר)') },
     { label: 'בילויים ומנויים',     cbsKey: 'entertainment', raw: nv(named, 'כמה הוצאתם על בילויים ומנויים? (נטפליקס / חדר כושר / יציאות / קולנוע)') },
