@@ -73,8 +73,10 @@ function nv(namedValues, key) {
 }
 
 function onFormSubmit(e) {
-  const named = e.namedValues;
-  Logger.log('namedValues: ' + JSON.stringify(named));
+  // Normalize keys — Google sometimes appends \n to question text
+  const named = {};
+  Object.entries(e.namedValues).forEach(([k, v]) => { named[k.trim()] = v; });
+  Logger.log('namedValues keys: ' + JSON.stringify(Object.keys(named)));
 
   const cityRaw = nv(named, 'באיזו עיר / אזור אתם גרים?');
   const city    = cityRaw.split('(')[0].trim();
