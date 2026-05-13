@@ -76,21 +76,21 @@ function onFormSubmit(e) {
   const named = e.namedValues;
   Logger.log('namedValues: ' + JSON.stringify(named));
 
-  const city    = nv(named, 'עיר');
-  const sizeStr = nv(named, 'גודל משק הבית');
-  const email   = nv(named, 'כתובת אימייל');
+  const cityRaw = nv(named, 'באיזו עיר / אזור אתם גרים?');
+  const city    = cityRaw.split('(')[0].trim();
+  const sizeStr = nv(named, 'כמה אנשים גרים אצלכם בבית? (כולל ילדים)');
+  const email   = nv(named, 'השאירו מייל ונשלח לכם את ההשוואה האישית שלכם');
   if (!email || !email.includes('@')) return;
 
   const hFactor = householdFactor(sizeStr);
 
   const categories = [
-    { label: 'דיור',               cbsKey: 'housing',       raw: nv(named, 'דיור') },
-    { label: 'סופר ומזון',          cbsKey: 'groceries',     raw: nv(named, 'סופר ומזון') },
-    { label: 'אוכל בחוץ ומשלוחים', cbsKey: 'eatingOut',     raw: nv(named, 'אוכל בחוץ ומשלוחים') },
-    { label: 'תחבורה',             cbsKey: 'transport',     raw: nv(named, 'תחבורה') },
-    { label: 'חשבונות',            cbsKey: 'utilities',     raw: nv(named, 'חשבונות') },
-    { label: 'ביטוחים',            cbsKey: 'insurance',     raw: nv(named, 'ביטוחים') },
-    { label: 'בילויים ומנויים',     cbsKey: 'entertainment', raw: nv(named, 'בילויים ומנויים') },
+    { label: 'דיור',               cbsKey: 'housing',       raw: nv(named, 'כמה שילמתם על דיור? (שכירות / משכנתא)') },
+    { label: 'סופר ומזון',          cbsKey: 'groceries',     raw: nv(named, 'כמה הוצאתם על סופר ומזון?') },
+    { label: 'אוכל בחוץ ומשלוחים', cbsKey: 'eatingOut',     raw: nv(named, 'כמה הוצאתם על אוכל בחוץ ומשלוחים?') },
+    { label: 'תחבורה',             cbsKey: 'transport',     raw: nv(named, 'כמה הוצאתם על תחבורה? (דלק / ביטוח רכב / תחבורה ציבורית / חניה)') },
+    { label: 'ביטוחים',            cbsKey: 'insurance',     raw: nv(named, 'כמה שילמתם על ביטוחים? (בריאות + חיים + רכב + דירה)') },
+    { label: 'בילויים ומנויים',     cbsKey: 'entertainment', raw: nv(named, 'כמה הוצאתם על בילויים ומנויים? (נטפליקס / חדר כושר / יציאות / קולנוע)') },
   ];
 
   let totalUser = 0;
