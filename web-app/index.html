@@ -31,10 +31,9 @@
       overflow-x: hidden;
     }
 
-    /* ── Phase containers ── */
+    /* ── Phase containers — visibility controlled by JS only ── */
     #inputPhase  { display: block; }
-    #loadPhase   { display: none; }
-    #revealPhase { display: none; }
+    #revealPhase { background: #f4f6fb; color: #1a1a2e; min-height: 100vh; padding-bottom: 60px; }
 
     /* ── Hero ── */
     .hero {
@@ -263,12 +262,6 @@
     @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-14px); } }
 
     /* ── Reveal phase ── */
-    #revealPhase {
-      background: #f4f6fb;
-      color: #1a1a2e;
-      min-height: 100vh;
-      padding-bottom: 60px;
-    }
 
     /* Verdict banner */
     .verdict-banner {
@@ -527,7 +520,7 @@
 </div>
 
 <!-- ══════════════════ LOADING PHASE ══════════════════ -->
-<div id="loadPhase">
+<div id="loadPhase" style="display:none">
   <div class="loader-title">מחשבים את הניתוח שלכם...</div>
   <div class="loader-sub">משווים לעשרות משקי בית באזורכם</div>
   <div class="loader-dots">
@@ -538,7 +531,7 @@
 </div>
 
 <!-- ══════════════════ REVEAL PHASE ══════════════════ -->
-<div id="revealPhase">
+<div id="revealPhase" style="display:none">
   <div class="verdict-banner" id="verdictBanner">
     <div class="verdict-eyebrow">הניתוח שלכם מוכן</div>
     <div class="verdict-headline" id="verdictHeadline"></div>
