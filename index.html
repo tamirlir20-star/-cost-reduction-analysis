@@ -843,6 +843,21 @@ function showReveal() {
   });
 }
 
+/* ── Backend ── */
+const BACKEND_URL = ''; // paste Apps Script deployment URL here
+
+function loadCrowdCount() {
+  if (!BACKEND_URL) return;
+  fetch(BACKEND_URL)
+    .then(r => r.json())
+    .then(d => {
+      const n = (d.count || 0).toLocaleString('he-IL');
+      document.getElementById('heroCount').textContent  = n;
+      document.getElementById('crowdCount').textContent = n;
+    })
+    .catch(() => {});
+}
+
 /* ── Util ── */
 function resetAll() {
   Object.keys(chosen).forEach(k => delete chosen[k]);
@@ -862,9 +877,28 @@ function closeModal() {
 }
 function submitEmail() {
   const email = document.getElementById('emailInput').value.trim();
-  if (!email.includes('@')) { alert('Please enter a valid email address'); return; }
+  if (!email.includes('@')) { alert('נא להזין כתובת מייל תקינה'); return; }
+
+  const payload = { email, city, hhSize, ...chosen };
+
+  if (BACKEND_URL) {
+    fetch(BACKEND_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+    .then(r => r.json())
+    .then(d => {
+      if (d.count) {
+        const n = d.count.toLocaleString('he-IL');
+        document.getElementById('heroCount').textContent  = n;
+        document.getElementById('crowdCount').textContent = n;
+      }
+    })
+    .catch(() => {});
+  }
+
   closeModal();
-  alert('Sent! You\'ll receive your analysis shortly ✓');
+  alert('נשלח! תקבלו את הניתוח האישי שלכם בקרוב ✓');
 }
 document.getElementById('modal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
@@ -882,6 +916,7 @@ function shareApp() {
 /* ── Init ── */
 buildCards();
 updateProgress();
+loadCrowdCount();
 </script>
 </body>
 </html>
