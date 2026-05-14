@@ -479,12 +479,14 @@
         <option value="תל אביב">תל אביב</option>
         <option value="גוש דן">גוש דן (רמת גן, גבעתיים, חולון...)</option>
         <option value="השרון">השרון (הרצליה, נתניה, כפר סבא...)</option>
+        <option value="מרכז">מרכז (מודיעין, ראשל"צ, פ"ת, נס ציונה...)</option>
+        <option value="שפלה">שפלה (לוד, רמלה, יבנה, קריית גת...)</option>
         <option value="ירושלים">ירושלים</option>
         <option value="חיפה">חיפה והקריות</option>
+        <option value="צפון עירוני">צפון עירוני (עכו, נהריה, כרמיאל...)</option>
+        <option value="צפון כפרי">צפון כפרי (גליל, עמק, קיבוצים...)</option>
         <option value="אשדוד">אשדוד / אשקלון / רחובות</option>
         <option value="באר שבע">באר שבע והנגב</option>
-        <option value="צפון">הצפון (גליל, עמק)</option>
-        <option value="מרכז-דרום">מרכז ודרום (שאר)</option>
       </select>
     </div>
     <div class="setup-field">
@@ -602,15 +604,17 @@ const CBS = {
   transport:2100, utilities:1300, insurance:800, entertainment:600,
 };
 const REGIONAL = {
-  'תל אביב':   {housing:1.55,groceries:1.10,eatingOut:1.20,transport:1.05,utilities:1.05,insurance:1.10,entertainment:1.20},
-  'גוש דן':    {housing:1.30,groceries:1.05,eatingOut:1.10,transport:1.05,utilities:1.05,insurance:1.05,entertainment:1.10},
-  'השרון':     {housing:1.20,groceries:1.05,eatingOut:1.08,transport:1.05,utilities:1.00,insurance:1.05,entertainment:1.08},
-  'מרכז-דרום': {housing:1.05,groceries:1.00,eatingOut:1.00,transport:1.00,utilities:1.00,insurance:1.00,entertainment:1.00},
-  'ירושלים':   {housing:1.25,groceries:1.00,eatingOut:1.05,transport:0.95,utilities:1.00,insurance:1.00,entertainment:1.00},
-  'חיפה':      {housing:0.85,groceries:0.98,eatingOut:0.95,transport:0.98,utilities:1.00,insurance:0.98,entertainment:0.95},
-  'צפון':      {housing:0.70,groceries:0.95,eatingOut:0.88,transport:1.05,utilities:1.00,insurance:0.95,entertainment:0.85},
-  'אשדוד':     {housing:0.80,groceries:0.95,eatingOut:0.90,transport:0.98,utilities:1.00,insurance:0.95,entertainment:0.88},
-  'באר שבע':   {housing:0.65,groceries:0.93,eatingOut:0.85,transport:1.05,utilities:1.00,insurance:0.92,entertainment:0.80},
+  'תל אביב':      {housing:1.55,groceries:1.10,eatingOut:1.20,transport:1.05,utilities:1.05,insurance:1.10,entertainment:1.20},
+  'גוש דן':       {housing:1.30,groceries:1.05,eatingOut:1.10,transport:1.05,utilities:1.05,insurance:1.05,entertainment:1.10},
+  'השרון':        {housing:1.20,groceries:1.05,eatingOut:1.08,transport:1.05,utilities:1.00,insurance:1.05,entertainment:1.08},
+  'מרכז':         {housing:1.12,groceries:1.02,eatingOut:1.05,transport:1.00,utilities:1.00,insurance:1.02,entertainment:1.05},
+  'שפלה':         {housing:0.80,groceries:0.95,eatingOut:0.88,transport:0.98,utilities:1.00,insurance:0.92,entertainment:0.82},
+  'ירושלים':      {housing:1.25,groceries:1.00,eatingOut:1.05,transport:0.95,utilities:1.00,insurance:1.00,entertainment:1.00},
+  'חיפה':         {housing:0.85,groceries:0.98,eatingOut:0.95,transport:0.98,utilities:1.00,insurance:0.98,entertainment:0.95},
+  'צפון עירוני':  {housing:0.72,groceries:0.96,eatingOut:0.90,transport:1.02,utilities:1.00,insurance:0.95,entertainment:0.87},
+  'צפון כפרי':    {housing:0.58,groceries:0.93,eatingOut:0.82,transport:1.10,utilities:1.00,insurance:0.92,entertainment:0.78},
+  'אשדוד':        {housing:0.80,groceries:0.95,eatingOut:0.90,transport:0.98,utilities:1.00,insurance:0.95,entertainment:0.88},
+  'באר שבע':      {housing:0.65,groceries:0.93,eatingOut:0.85,transport:1.05,utilities:1.00,insurance:0.92,entertainment:0.80},
 };
 const HH = {1:.55, 2:.80, 3:1.00, 4:1.20, 5:1.38, 6:1.55};
 
