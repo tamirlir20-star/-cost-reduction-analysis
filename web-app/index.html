@@ -690,6 +690,7 @@ let neighborhood = '';
 let ageRange     = '';
 let housingType  = '';
 const chosen = {};
+const chosenLabels = {};
 
 const fmt = n => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -718,7 +719,7 @@ function buildCards() {
       <div class="chips">
         ${cat.chips.map((c,i) => `
           <button class="chip${chosen[cat.key] === c.v ? ' sel' : ''}"
-            onclick="pick('${cat.key}',${c.v},this)">${c.l}</button>
+            onclick="pick('${cat.key}',${c.v},this,'${c.l}')">${c.l}</button>
         `).join('')}
       </div>
     `;
@@ -726,9 +727,9 @@ function buildCards() {
   });
 }
 
-function pick(key, val, btn) {
+function pick(key, val, btn, label) {
   chosen[key] = val;
-  // update chips
+  chosenLabels[key] = label || btn.textContent;
   btn.closest('.chips').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
   btn.classList.add('sel');
   document.getElementById('card-' + key).classList.add('done');
@@ -857,7 +858,7 @@ function showReveal() {
       <div class="crr-vals">
         <div class="crr-val-block">
           <div class="crr-val-lbl">אתם</div>
-          <div class="crr-val-num">${fmt(v)}</div>
+          <div class="crr-val-num">${chosenLabels[cat.key] || fmt(v)}</div>
         </div>
         <div class="crr-val-block">
           <div class="crr-val-lbl">ממוצע באזורכם</div>
