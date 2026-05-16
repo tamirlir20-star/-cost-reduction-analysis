@@ -156,9 +156,20 @@
       gap: 7px;
       overflow-x: auto;
       padding-bottom: 4px;
+      padding-left: 16px;
       scrollbar-width: none;
     }
     .chips::-webkit-scrollbar { display: none; }
+    .cat-card { overflow: hidden; position: relative; }
+    .cat-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 32px;
+      background: linear-gradient(to left, transparent, var(--dark2));
+      pointer-events: none;
+      z-index: 1;
+    }
     .chip {
       padding: 7px 13px;
       background: var(--dark3);
