@@ -704,11 +704,11 @@ function updateProgress() {
   document.getElementById('progressCount').textContent = `${done} / ${total}`;
   document.getElementById('progressFill').style.width  = ((done / total) * 100) + '%';
   const btn = document.getElementById('ctaBtn');
-  btn.classList.toggle('ready', done === total);
+  btn.classList.toggle('ready', done === total && !!city);
 }
 
 /* ── Setup events ── */
-document.getElementById('citySelect').addEventListener('change', function() { city = this.value; });
+document.getElementById('citySelect').addEventListener('change', function() { city = this.value; updateProgress(); });
 document.getElementById('sizeBtns').addEventListener('click', function(e) {
   const b = e.target.closest('.sz');
   if (!b) return;
@@ -719,6 +719,7 @@ document.getElementById('sizeBtns').addEventListener('click', function(e) {
 
 /* ── Reveal flow ── */
 function startReveal() {
+  if (!city) { alert('נא לבחור אזור מגורים'); return; }
   if (Object.keys(chosen).length < CATS.length) return;
 
   document.getElementById('inputPhase').style.display = 'none';
