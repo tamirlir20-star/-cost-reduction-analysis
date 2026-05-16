@@ -499,6 +499,11 @@
       </select>
     </div>
     <div class="setup-field">
+      <span class="setup-label">שכונה / ישוב מדויק</span>
+      <input type="text" id="neighborhoodInput" placeholder="לדוגמה: פלורנטין, רמות..."
+        style="width:100%;padding:12px 14px;background:var(--dark3);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;outline:none;">
+    </div>
+    <div class="setup-field">
       <span class="setup-label">נפשות במשק הבית</span>
       <div class="size-btns" id="sizeBtns">
         <button class="sz" data-n="1">1</button>
@@ -507,6 +512,25 @@
         <button class="sz" data-n="4">4</button>
         <button class="sz" data-n="5">5</button>
         <button class="sz" data-n="6">6+</button>
+      </div>
+    </div>
+    <div class="setup-field">
+      <span class="setup-label">גיל</span>
+      <select id="ageSelect" style="width:100%;padding:12px 14px;background:var(--dark3);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;cursor:pointer;appearance:none;">
+        <option value="">— בחרו —</option>
+        <option value="18-25">18–25</option>
+        <option value="26-35">26–35</option>
+        <option value="36-45">36–45</option>
+        <option value="46-60">46–60</option>
+        <option value="60+">60+</option>
+      </select>
+    </div>
+    <div class="setup-field">
+      <span class="setup-label">סוג דיור</span>
+      <div class="size-btns" id="housingTypeBtns">
+        <button class="sz" data-ht="שכירות">שכירות</button>
+        <button class="sz" data-ht="משכנתא">משכנתא</button>
+        <button class="sz" data-ht="אחר">אחר</button>
       </div>
     </div>
   </div>
@@ -659,9 +683,12 @@ const CATS = [
 ];
 
 /* ── State ── */
-let city   = '';
-let hhSize = 3;
-const chosen = {}; // key → value
+let city         = '';
+let hhSize       = 3;
+let neighborhood = '';
+let ageRange     = '';
+let housingType  = '';
+const chosen = {};
 
 const fmt = n => '₪' + Math.round(n).toLocaleString('he-IL');
 
@@ -718,12 +745,21 @@ function updateProgress() {
 
 /* ── Setup events ── */
 document.getElementById('citySelect').addEventListener('change', function() { city = this.value; updateProgress(); });
+document.getElementById('neighborhoodInput').addEventListener('input', function() { neighborhood = this.value.trim(); });
+document.getElementById('ageSelect').addEventListener('change', function() { ageRange = this.value; });
 document.getElementById('sizeBtns').addEventListener('click', function(e) {
   const b = e.target.closest('.sz');
   if (!b) return;
-  document.querySelectorAll('.sz').forEach(x => x.classList.remove('on'));
+  this.querySelectorAll('.sz').forEach(x => x.classList.remove('on'));
   b.classList.add('on');
   hhSize = parseInt(b.dataset.n);
+});
+document.getElementById('housingTypeBtns').addEventListener('click', function(e) {
+  const b = e.target.closest('.sz');
+  if (!b) return;
+  this.querySelectorAll('.sz').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  housingType = b.dataset.ht;
 });
 
 /* ── Reveal flow ── */
@@ -889,7 +925,7 @@ function submitEmail() {
   const email = document.getElementById('emailInput').value.trim();
   if (!email.includes('@')) { alert('נא להזין כתובת מייל תקינה'); return; }
 
-  const payload = { email, city, hhSize, ...chosen };
+  const payload = { email, city, hhSize, neighborhood, ageRange, housingType, ...chosen };
 
   if (BACKEND_URL) {
     fetch(BACKEND_URL, {

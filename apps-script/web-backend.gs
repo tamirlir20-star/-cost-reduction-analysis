@@ -55,10 +55,11 @@ function doPost(e) {
 function saveToSheet(d) {
   const sheet = getSheet();
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['timestamp','source','email','city','hhSize',...CATS]);
+    sheet.appendRow(['timestamp','source','email','city','neighborhood','age_range','housing_type','hhSize',...CATS]);
   }
   sheet.appendRow([
-    new Date(), d.source || 'web', d.email || '', d.city || '', d.hhSize || '',
+    new Date(), d.source || 'web', d.email || '', d.city || '',
+    d.neighborhood || '', d.ageRange || '', d.housingType || '', d.hhSize || '',
     ...CATS.map(k => d[k] || 0),
   ]);
 }
@@ -72,8 +73,11 @@ function saveToSupabase(d, source) {
 
   const payload = {
     source:        source || 'web',
-    email:         d.email    || '',
-    city:          d.city     || '',
+    email:         d.email        || '',
+    city:          d.city         || '',
+    neighborhood:  d.neighborhood || '',
+    age_range:     d.ageRange     || '',
+    housing_type:  d.housingType  || '',
     hh_size:       parseInt(d.hhSize) || null,
     housing:       parseInt(d.housing)       || 0,
     groceries:     parseInt(d.groceries)     || 0,
@@ -84,7 +88,7 @@ function saveToSupabase(d, source) {
     entertainment: parseInt(d.entertainment) || 0,
   };
 
-  UrlFetchApp.fetch(url + '/rest/v1/submissions', {
+  const res = UrlFetchApp.fetch(url + '/rest/v1/submissions', {
     method:  'post',
     headers: {
       'apikey':        key,
@@ -95,6 +99,9 @@ function saveToSupabase(d, source) {
     payload:          JSON.stringify(payload),
     muteHttpExceptions: true,
   });
+  if (res.getResponseCode() >= 300) {
+    Logger.log('Supabase error ' + res.getResponseCode() + ': ' + res.getContentText());
+  }
 }
 
 // ── One-time migration: Google Sheet → Supabase ──
