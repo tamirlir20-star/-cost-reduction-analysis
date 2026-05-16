@@ -150,7 +150,15 @@
     .cat-tip  { font-size: 11px; color: var(--muted); margin-top: 1px; }
 
     /* Range chips */
-    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chips {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .chips::-webkit-scrollbar { display: none; }
     .chip {
       padding: 7px 13px;
       background: var(--dark3);
@@ -163,6 +171,7 @@
       cursor: pointer;
       transition: all .15s;
       white-space: nowrap;
+      flex-shrink: 0;
     }
     .chip:hover { border-color: var(--accent); color: var(--text); }
     .chip.sel {
