@@ -99,6 +99,7 @@ function saveToSupabase(d, source) {
 
 // ── One-time migration: Google Sheet → Supabase ──
 // Run this manually once from the Apps Script editor (Run → migrateSheetToSupabase)
+// Migrates the "Submissions" sheet (new format)
 function migrateSheetToSupabase() {
   const sheet = getSheet();
   const rows  = sheet.getDataRange().getValues();
@@ -106,7 +107,6 @@ function migrateSheetToSupabase() {
 
   const headers = rows[0].map(h => String(h).trim().toLowerCase());
   const idx = k => headers.indexOf(k);
-
   let success = 0, failed = 0;
 
   rows.slice(1).forEach((row, i) => {
@@ -126,7 +126,7 @@ function migrateSheetToSupabase() {
       };
       saveToSupabase(d, d.source);
       success++;
-      Utilities.sleep(100); // avoid rate limiting
+      Utilities.sleep(100);
     } catch (e) {
       Logger.log('Row ' + (i + 2) + ' failed: ' + e.message);
       failed++;
@@ -134,6 +134,79 @@ function migrateSheetToSupabase() {
   });
 
   Logger.log('Migration complete. Success: ' + success + ', Failed: ' + failed);
+}
+
+// Migrates the Google Form responses sheet ("תגובות לטופס 1")
+function migrateFormSheet() {
+  const ss    = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('תגובות לטופס 1');
+  if (!sheet) { Logger.log('Sheet "תגובות לטופס 1" not found.'); return; }
+
+  const rows    = sheet.getDataRange().getValues();
+  if (rows.length <= 1) { Logger.log('No rows found.'); return; }
+
+  const headers = rows[0].map(h => String(h).trim());
+
+  // Find column index by partial match
+  const col = (keyword) => headers.findIndex(h => h.includes(keyword));
+
+  const iCity    = col('עיר');
+  const iSize    = col('כמה אנשים');
+  const iEmail   = col('מייל');
+  const iHousing = col('דיור');
+  const iGrocery = col('סופר');
+  const iEatOut  = col('אוכל בחוץ');
+  const iTransp  = col('תחבורה');
+  const iInsur   = col('ביטוחים');
+  const iUtils   = col('חשבונות');
+  const iEntert  = col('בילויים');
+
+  let success = 0, failed = 0;
+
+  rows.slice(1).forEach((row, i) => {
+    try {
+      const cityRaw = iCity  >= 0 ? String(row[iCity]).split('(')[0].trim() : '';
+      const sizeRaw = iSize  >= 0 ? String(row[iSize]) : '3';
+      const size    = parseInt(sizeRaw) || 3;
+
+      const d = {
+        source:        'form',
+        email:         iEmail  >= 0 ? String(row[iEmail]).trim()       : '',
+        city:          cityRaw,
+        hhSize:        size,
+        housing:       iHousing >= 0 ? parseMidpoint(String(row[iHousing])) : 0,
+        groceries:     iGrocery >= 0 ? parseMidpoint(String(row[iGrocery])) : 0,
+        eatingOut:     iEatOut  >= 0 ? parseMidpoint(String(row[iEatOut]))  : 0,
+        transport:     iTransp  >= 0 ? parseMidpoint(String(row[iTransp]))  : 0,
+        insurance:     iInsur   >= 0 ? parseMidpoint(String(row[iInsur]))   : 0,
+        utilities:     iUtils   >= 0 ? parseMidpoint(String(row[iUtils]))   : 0,
+        entertainment: iEntert  >= 0 ? parseMidpoint(String(row[iEntert]))  : 0,
+      };
+
+      saveToSupabase(d, 'form');
+      success++;
+      Utilities.sleep(100);
+    } catch (e) {
+      Logger.log('Row ' + (i + 2) + ' failed: ' + e.message);
+      failed++;
+    }
+  });
+
+  Logger.log('Form migration complete. Success: ' + success + ', Failed: ' + failed);
+}
+
+function parseMidpoint(str) {
+  if (!str || str === '—') return 0;
+  const clean = str.replace(/[₪,\s]/g, '');
+  if (clean.endsWith('+')) return Math.round(parseInt(clean) * 1.3);
+  if (clean.endsWith('-')) return Math.round(parseInt(clean) * 0.6);
+  const parts = clean.split(/[–—-]/);
+  if (parts.length === 2) {
+    const a = parseInt(parts[0]), b = parseInt(parts[1]);
+    if (!isNaN(a) && !isNaN(b)) return Math.round((a + b) / 2);
+  }
+  const n = parseInt(clean);
+  return isNaN(n) ? 0 : n;
 }
 
 // ── Send personalized HTML email ──
