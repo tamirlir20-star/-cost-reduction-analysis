@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>איפה הכסף שלכם הולך?</title>
+  <title>לאן הכסף שלכם הולך?</title>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -152,16 +152,11 @@
     /* Range chips */
     .chips {
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       gap: 7px;
-      overflow-x: auto;
-      padding: 0 22px 4px;
-      margin: 0 -22px;
-      scrollbar-width: none;
     }
-    .chips::-webkit-scrollbar { display: none; }
     .chip {
-      padding: 7px 13px;
+      padding: 8px 13px;
       background: var(--dark3);
       border: 1.5px solid var(--border);
       border-radius: 20px;
@@ -172,7 +167,6 @@
       cursor: pointer;
       transition: all .15s;
       white-space: nowrap;
-      flex-shrink: 0;
     }
     .chip:hover { border-color: var(--accent); color: var(--text); }
     .chip.sel {
@@ -476,7 +470,7 @@
 
   <div class="hero">
     <div class="hero-eyebrow">ניתוח הוצאות משק בית</div>
-    <h1>איפה <span>הכסף שלכם</span> הולך?</h1>
+    <h1>לאן <span>הכסף שלכם</span> הולך?</h1>
     <p>בחרו טווח לכל קטגוריה — בסוף תגלו איך אתם מסתדרים ביחס לשאר</p>
   </div>
 
@@ -955,7 +949,7 @@ document.getElementById('modal').addEventListener('click', e => {
 function shareApp() {
   const url = window.location.href;
   if (navigator.share) {
-    navigator.share({ title: 'איפה הכסף שלכם הולך?', url });
+    navigator.share({ title: 'לאן הכסף שלכם הולך?', url });
   } else {
     navigator.clipboard.writeText(url).then(() => alert('Link copied ✓'));
   }
