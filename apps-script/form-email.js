@@ -97,19 +97,40 @@ function getCount() {
 
 function saveToSupabase(row) {
   const key = sbKey();
-  if (!key) { Logger.log('No SUPABASE_KEY in Script Properties'); return; }
+  if (!key) { Logger.log('No SUPABASE_KEY in Script Properties'); return null; }
   const res = UrlFetchApp.fetch(sbUrl() + '/rest/v1/submissions', {
     method: 'post',
     contentType: 'application/json',
     headers: {
       'apikey': key,
       'Authorization': 'Bearer ' + key,
-      'Prefer': 'return=minimal',
+      'Prefer': 'return=representation',
     },
     payload: JSON.stringify(row),
     muteHttpExceptions: true,
   });
   Logger.log('Supabase INSERT ' + res.getResponseCode() + ': ' + res.getContentText());
+  try {
+    const rows = JSON.parse(res.getContentText());
+    return rows[0] ? rows[0].id : null;
+  } catch (e) { return null; }
+}
+
+function updateSupabaseEmail(id, email) {
+  const key = sbKey();
+  if (!key || !id) return;
+  const res = UrlFetchApp.fetch(sbUrl() + '/rest/v1/submissions?id=eq.' + id, {
+    method: 'patch',
+    contentType: 'application/json',
+    headers: {
+      'apikey': key,
+      'Authorization': 'Bearer ' + key,
+      'Prefer': 'return=minimal',
+    },
+    payload: JSON.stringify({ email }),
+    muteHttpExceptions: true,
+  });
+  Logger.log('Supabase UPDATE email ' + res.getResponseCode());
 }
 
 /* ── Web endpoints ── */
@@ -154,28 +175,41 @@ function doPost(e) {
 
   const totalCmp = compareToAverage(totalUser, totalAvg);
 
-  if (email.includes('@')) {
-    saveToSupabase({
-      source:        'website',
-      email,
-      city,
-      neighborhood,
-      age_range:     ageRange,
-      housing_type:  housingType,
-      hh_size:       hhSize,
-      housing:       parseInt(data.housing)       || 0,
-      groceries:     parseInt(data.groceries)     || 0,
-      eating_out:    parseInt(data.eatingOut)     || 0,
-      transport:     parseInt(data.transport)     || 0,
-      insurance:     parseInt(data.insurance)     || 0,
-      utilities:     parseInt(data.utilities)     || 0,
-      entertainment: parseInt(data.entertainment) || 0,
-    });
+  const submissionId = data.submissionId || null;
+  const sbRow = {
+    source:        'website',
+    city,
+    neighborhood,
+    age_range:     ageRange,
+    housing_type:  housingType,
+    hh_size:       hhSize,
+    housing:       parseInt(data.housing)       || 0,
+    groceries:     parseInt(data.groceries)     || 0,
+    eating_out:    parseInt(data.eatingOut)     || 0,
+    transport:     parseInt(data.transport)     || 0,
+    insurance:     parseInt(data.insurance)     || 0,
+    utilities:     parseInt(data.utilities)     || 0,
+    entertainment: parseInt(data.entertainment) || 0,
+  };
 
-    GmailApp.sendEmail(email, 'הדוח האישי שלכם — ניתוח הוצאות', '', {
-      htmlBody: buildEmailHtml(city, hhSize, rows, totalUser, totalAvg, totalCmp),
-      name: 'ניתוח הוצאות',
-    });
+  if (!email) {
+    // Anonymous reveal — save without email, return ID
+    const id = saveToSupabase(sbRow);
+    return jsonOut({ ok: true, count: getCount(), id });
+  }
+
+  // Email provided — send email
+  GmailApp.sendEmail(email, 'הדוח האישי שלכם — ניתוח הוצאות', '', {
+    htmlBody: buildEmailHtml(city, hhSize, rows, totalUser, totalAvg, totalCmp),
+    name: 'ניתוח הוצאות',
+  });
+
+  if (submissionId) {
+    // Update existing row with email
+    updateSupabaseEmail(submissionId, email);
+  } else {
+    // Fallback: save full row with email (anonymous save failed)
+    saveToSupabase({ ...sbRow, email });
   }
 
   return jsonOut({ ok: true, count: getCount() });

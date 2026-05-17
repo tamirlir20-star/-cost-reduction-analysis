@@ -766,6 +766,7 @@ function startReveal() {
   document.getElementById('inputPhase').style.display = 'none';
   document.getElementById('loadPhase').style.display  = 'flex';
 
+  saveSubmission();
   setTimeout(showReveal, 2200);
 }
 
@@ -888,6 +889,17 @@ function showReveal() {
 /* ── Backend ── */
 const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbznWcrKSsM9bssdE2anxl6lSBio07HDoAyornrwMU83rIF4QXMm92Xg45g9iK3_hYBHnA/exec';
 
+let submissionId = null;
+
+function saveSubmission() {
+  if (!BACKEND_URL) return;
+  const payload = { city, hhSize, neighborhood, ageRange, housingType, ...chosen };
+  fetch(BACKEND_URL, { method: 'POST', body: JSON.stringify(payload) })
+    .then(r => r.json())
+    .then(d => { if (d.id) submissionId = d.id; })
+    .catch(() => {});
+}
+
 function loadCrowdCount() {
   if (!BACKEND_URL) return;
   fetch(BACKEND_URL)
@@ -903,6 +915,7 @@ function loadCrowdCount() {
 /* ── Util ── */
 function resetAll() {
   Object.keys(chosen).forEach(k => delete chosen[k]);
+  submissionId = null;
   document.getElementById('revealPhase').style.display = 'none';
   document.getElementById('inputPhase').style.display  = 'block';
   window.scrollTo(0, 0);
@@ -921,22 +934,10 @@ function submitEmail() {
   const email = document.getElementById('emailInput').value.trim();
   if (!email.includes('@')) { alert('נא להזין כתובת מייל תקינה'); return; }
 
-  const payload = { email, city, hhSize, neighborhood, ageRange, housingType, ...chosen };
+  const payload = { email, submissionId, city, hhSize, neighborhood, ageRange, housingType, ...chosen };
 
   if (BACKEND_URL) {
-    fetch(BACKEND_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
-    .then(r => r.json())
-    .then(d => {
-      if (d.count) {
-        const n = d.count.toLocaleString('he-IL');
-        document.getElementById('heroCount').textContent  = n;
-        document.getElementById('crowdCount').textContent = n;
-      }
-    })
-    .catch(() => {});
+    fetch(BACKEND_URL, { method: 'POST', body: JSON.stringify(payload) }).catch(() => {});
   }
 
   closeModal();
