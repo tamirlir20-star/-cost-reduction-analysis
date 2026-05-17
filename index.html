@@ -531,6 +531,11 @@
   </div>
 
   <!-- Category cards -->
+  <div style="max-width:650px;margin:28px auto 0;padding:0 16px;">
+    <p style="font-size:12px;color:var(--muted);text-align:right;margin:0;">
+      כל הסכומים הם <strong style="color:var(--text);">חודשיים</strong>
+    </p>
+  </div>
   <div class="cats-grid" id="catsGrid"></div>
 
   <!-- Bottom CTA -->
@@ -629,7 +634,7 @@
 /* ── Data ── */
 const CBS = {
   housing:4800, groceries:2700, eatingOut:650,
-  transport:2100, utilities:1300, insurance:800, entertainment:600,
+  transport:2100, utilities:1300, insurance:800, entertainment:900,
 };
 const REGIONAL = {
   'תל אביב':      {housing:1.55,groceries:1.10,eatingOut:1.20,transport:1.05,utilities:1.05,insurance:1.10,entertainment:1.20},
@@ -652,7 +657,7 @@ const CATS = [
     chips: [{l:'עד ₪3,000',v:1500},{l:'₪3,000–₪5,000',v:4000},{l:'₪5,000–₪8,000',v:6500},{l:'₪8,000–₪12,000',v:10000},{l:'₪12,000+',v:15000}]
   },
   {
-    key:'groceries', label:'סופר ומזון', icon:'🛒', tip:'קניות שבועיות',
+    key:'groceries', label:'סופר ומזון', icon:'🛒', tip:'סופר, שוק, קצבייה',
     chips: [{l:'עד ₪1,500',v:750},{l:'₪1,500–₪2,500',v:2000},{l:'₪2,500–₪4,000',v:3250},{l:'₪4,000–₪6,000',v:5000},{l:'₪6,000+',v:7500}]
   },
   {
@@ -672,7 +677,7 @@ const CATS = [
     chips: [{l:'עד ₪700',v:350},{l:'₪700–₪1,200',v:950},{l:'₪1,200–₪2,000',v:1600},{l:'₪2,000–₪3,000',v:2500},{l:'₪3,000+',v:4000}]
   },
   {
-    key:'entertainment', label:'בילויים ומנויים', icon:'🎬', tip:'נטפליקס / חדר כושר / יציאות',
+    key:'entertainment', label:'בילויים ומנויים', icon:'🎬', tip:'מנויים, חדר כושר, יציאות, קולנוע',
     chips: [{l:'עד ₪300',v:150},{l:'₪300–₪600',v:450},{l:'₪600–₪1,200',v:900},{l:'₪1,200–₪2,000',v:1600},{l:'₪2,000+',v:2500}]
   },
 ];

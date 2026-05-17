@@ -10,7 +10,7 @@
 
 const CBS_AVERAGES = {
   housing: 4800, groceries: 2700, eatingOut: 650,
-  transport: 2100, utilities: 1300, insurance: 800, entertainment: 600,
+  transport: 2100, utilities: 1300, insurance: 800, entertainment: 900,
 };
 
 const REGIONAL_FACTORS = {
